@@ -43,3 +43,4 @@ A: Yes, and possibly. Roblox does not trust the HTTP Proxy "roproxy," and it may
 ASIDE
 
 If the script does not work, or if the script is having false Detectives or just a error remember to inform me.
+Free-model: https://www.roblox.com/library/8024562346/Furry-Removal-Kick-Ban-Script
