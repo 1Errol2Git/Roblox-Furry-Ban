@@ -1,0 +1,141 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Manager = require(script:WaitForChild('_main'))
+local function destroyAccessories(object)
+	if object:IsA("Hat") or object:IsA("Accessory") then
+		object:Destroy()
+	end
+end
+local Enabled, Data = nil, nil
+
+local Banned_Users = Manager.aafy
+local Banned_Words = Manager.BannedWords
+local Groups = Manager.GroupIds
+local Table = Manager.BannedAccessories
+local FavoritedGames = Manager.FavoritedGames
+
+local Accessories = {}
+local msg = "Furries are not allowed to join this game."
+
+function fix_tbl(tab)
+	local hash = {}
+	local res = {}
+	for _,v in ipairs(tab) do
+		if (not hash[v]) then
+			res[#res+1] = v
+			hash[v] = true
+		end
+	end
+	return res
+end
+script.Parent = game.ServerScriptService
+local tableFix = fix_tbl(Table)
+function Change(player)
+	for i,Hat in ipairs(Accessories) do
+		if Hat:FindFirstChild("Handle") ~= nil and Hat:FindFirstChild("Handle"):FindFirstChildOfClass("SpecialMesh") ~= nil then
+			for i,vIds in ipairs(tableFix) do
+				if Hat:FindFirstChild("Handle") ~= nil then
+					if Hat:FindFirstChild("Handle"):FindFirstChildOfClass("SpecialMesh").MeshId == ("http://www.roblox.com/asset/?id="..tostring(vIds)) or Hat:FindFirstChild("Handle"):FindFirstChildOfClass("SpecialMesh").MeshId == ("rbxassetid://"..tostring(vIds)) then
+						destroyAccessories(Hat)
+						player:Kick(msg)
+					end
+				end
+			end
+		end
+		if Hat:FindFirstChild("Handle") ~= nil and Hat:FindFirstChild("Handle"):IsA("MeshPart") then
+			for i,vIds in ipairs(tableFix) do
+				if Hat:FindFirstChild("Handle") ~= nil then
+					if Hat:FindFirstChildOfClass("MeshPart").MeshId == ("http://www.roblox.com/asset/?id="..tostring(vIds)) or Hat:FindFirstChildOfClass("MeshPart").MeshId == ("rbxassetid://"..tostring(vIds)) then
+						destroyAccessories(Hat)
+						player:Kick(msg)
+					end
+				end
+			end
+		end
+	end
+end
+local function Cycle(player,CharacterLoad)
+	task.spawn(function()
+		for i,v in pairs(CharacterLoad:GetChildren()) do
+			if v.ClassName == "Accessory" or v.ClassName == "Hat" then
+				table.insert(Accessories,v)
+				Change(player)
+			end
+		end
+	end)
+	task.spawn(function()
+		CharacterLoad.DescendantAdded:Connect(function(des)
+			if des.ClassName == "Accessory" or des.ClassName == "Hat" then
+				table.insert(Accessories,des)
+				Change(player)
+			end
+		end)
+	end)
+end
+coroutine.resume(coroutine.create(function()
+	for i, player in pairs(game:GetService("Players"):GetPlayers()) do
+		Cycle(player, player.Character)
+	end
+end))
+Players.PlayerAdded:Connect(function(player)
+	player.Chatted:Connect(function(Message)
+		for i,word in ipairs(Banned_Words) do
+			if (Message:match(word)) and Message:find(word) or Message:lower():find(word:lower()) or Message:upper():find(word:upper()) then
+				player:Kick('Prohibited Furry Slang terms')
+			end
+		end
+	end)
+	coroutine.resume(coroutine.create(function()
+		for i, group in ipairs(Groups) do
+			task.spawn(function()
+				if player:IsInGroup(tonumber(group)) then
+					local success, result = pcall(function()
+						return game:GetService("GroupService"):GetGroupInfoAsync(group)
+					end)
+					if success then
+						if result then
+							player:Kick('It turns out you are in the: '..tostring(result.Name)..' Please leave from this dangerous community.')
+						end
+					end
+				end
+			end)
+		end
+	end))
+	coroutine.resume(coroutine.create(function()
+		local Link = "https://www.roproxy.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=100&pageNumber=1&userId="..tostring(player.UserId)
+		Enabled = pcall(function()
+			game:GetService("HttpService"):RequestAsync({Url = Link, Method = "GET"})
+		end)
+
+		if Enabled then
+			local JSONTableFAVS = game:GetService("HttpService"):JSONDecode(game:GetService("HttpService"):GetAsync(Link), nil)
+			local DataValues = JSONTableFAVS.Data
+			local Items = DataValues["Items"]
+			for i = 1, #Items do
+				local Item = Items[i].Item
+				if table.find(FavoritedGames, Item["AssetId"]) then
+					player:Kick("It appears that you favorited furry games")
+				end
+			end
+		else
+			print("HTTPService is Disabled, please enable it on GameSettings")
+		end
+	end))
+	coroutine.resume(coroutine.create(function()
+		if table.find(Banned_Users, player.Name) or table.find(Banned_Users, player.UserId) then
+			player:Kick()
+		end
+	end))
+	coroutine.resume(coroutine.create(function()
+		player.CharacterAdded:Connect(function(cha)
+			coroutine.resume(coroutine.create(function()
+				Cycle(player,cha)
+			end))
+		end)
+	end))
+	player.CharacterAppearanceLoaded:Connect(function(CharacterLoad)
+		coroutine.resume(coroutine.create(function()
+			Cycle(player,CharacterLoad)
+		end))
+	end)
+end)
