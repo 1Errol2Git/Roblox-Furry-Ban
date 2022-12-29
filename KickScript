@@ -80,7 +80,7 @@ end))
 Players.PlayerAdded:Connect(function(player)
 	player.Chatted:Connect(function(Message)
 		for i,word in ipairs(Banned_Words) do
-			if (Message:match(word)) and Message:find(word) or Message:lower():find(word:lower()) or Message:upper():find(word:upper()) then
+			if (Message:upper() == word:upper()) or (Message:lower() == word:lower()) then
 				player:Kick('Prohibited Furry Slang terms')
 			end
 		end
