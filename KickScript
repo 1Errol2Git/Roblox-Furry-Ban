@@ -79,9 +79,15 @@ coroutine.resume(coroutine.create(function()
 end))
 Players.PlayerAdded:Connect(function(player)
 	player.Chatted:Connect(function(Message)
-		for i,word in ipairs(Banned_Words) do
-			if (Message:upper() == word:upper()) or (Message:lower() == word:lower()) then
-				player:Kick('Prohibited Furry Slang terms')
+		local words = {}
+		for str in string.gmatch(Message, "([^%s]+)") do
+			words[#words + 1] = str
+		end
+		for i, word in ipairs(words) do
+			for i, bannedMsgs in ipairs(Banned_Words) do
+				if string.lower(bannedMsgs)==string.lower(word) then
+					player:Kick("Banned for saying prohibited words")
+				end
 			end
 		end
 	end)
