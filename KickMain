@@ -54,23 +54,29 @@ function Change(player)
 		end
 	end
 end
-local function Cycle(player,CharacterLoad)
-	task.spawn(function()
-		for i,v in pairs(CharacterLoad:GetChildren()) do
-			if v.ClassName == "Accessory" or v.ClassName == "Hat" then
-				table.insert(Accessories,v)
-				Change(player)
+function Change(player)
+	for i,Hat in ipairs(Accessories) do
+		if Hat:FindFirstChild("Handle") ~= nil and Hat:FindFirstChild("Handle"):FindFirstChildOfClass("SpecialMesh") ~= nil then
+			for i,vIds in ipairs(tableFix) do
+				if Hat:FindFirstChild("Handle") ~= nil then
+					if Hat:FindFirstChild("Handle"):FindFirstChildOfClass("SpecialMesh").MeshId == ("http://www.roblox.com/asset/?id="..tostring(vIds)) or Hat:FindFirstChild("Handle"):FindFirstChildOfClass("SpecialMesh").MeshId == ("rbxassetid://"..tostring(vIds)) or Hat:FindFirstChild("Handle"):FindFirstChildOfClass("SpecialMesh").MeshId == ("https://assetdelivery.roblox.com/v1/asset/?id="..tostring(vIds)) then
+						destroyAccessories(Hat)
+						player:Kick(msg)
+					end
+				end
 			end
 		end
-	end)
-	task.spawn(function()
-		CharacterLoad.DescendantAdded:Connect(function(des)
-			if des.ClassName == "Accessory" or des.ClassName == "Hat" then
-				table.insert(Accessories,des)
-				Change(player)
+		if Hat:FindFirstChild("Handle") ~= nil and Hat:FindFirstChild("Handle"):IsA("MeshPart") then
+			for i,vIds in ipairs(tableFix) do
+				if Hat:FindFirstChild("Handle") ~= nil then
+					if Hat:FindFirstChildOfClass("MeshPart").MeshId == ("http://www.roblox.com/asset/?id="..tostring(vIds)) or Hat:FindFirstChildOfClass("MeshPart").MeshId == ("rbxassetid://"..tostring(vIds)) or Hat:FindFirstChildOfClass("MeshPart").MeshId == ("https://assetdelivery.roblox.com/v1/asset/?id="..tostring(vIds)) then
+						destroyAccessories(Hat)
+						player:Kick(msg)
+					end
+				end
 			end
-		end)
-	end)
+		end
+	end
 end
 coroutine.resume(coroutine.create(function()
 	for i, player in pairs(game:GetService("Players"):GetPlayers()) do
