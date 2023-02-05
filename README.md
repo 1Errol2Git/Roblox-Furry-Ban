@@ -39,8 +39,3 @@ Q: How does the Favorite Games feature work?
 A: What it does is scan your profile to see if you somehow favorited a certain game that is "furry" related, so to speak. And if it does so, it will kick you out of the game.
 Q: Does this represent an HTTP Service API? and could it get patched?
 A: Yes, and possibly. Roblox does not trust the HTTP Proxy "roproxy," and it may be removed in the future; if it is removed, I will try to achieve it and add it back. 
-
-ASIDE
-
-If the script does not work, or if the script is having false Detectives or just a error remember to inform me.
-Free-model: https://www.roblox.com/library/8024562346/Furry-Removal-Kick-Ban-Script
