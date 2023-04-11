@@ -1,4 +1,4 @@
-# Furry-Removal-Test
+# Ro-Furry Ban
 When a furry joins your game, this script has the ability to kick them.
 
 
