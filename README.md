@@ -8,7 +8,7 @@ What this script simply does is scan your groups, chat messages, accessories, an
 This script has been updated as of December 21, 2022, and I'd like you to review it and give it a pull request or issue something on the script.
 
 
-If you'd like to inform me, please contact me at Discord. Tag: RegisteredArchivable7200#6840, Thank you.
+If you'd like to inform me, please contact me at Discord. Tag: RegisteredArchivable7200#3244, Thank you.
 
 
 How exactly does the script work?
